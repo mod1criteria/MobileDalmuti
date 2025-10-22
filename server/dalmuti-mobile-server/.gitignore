@@ -1,0 +1,9 @@
+node_modules/
+dist/
+*.log
+.eslintcache
+.nyc_output/
+coverage/
+logs/
+.DS_Store
+.env
