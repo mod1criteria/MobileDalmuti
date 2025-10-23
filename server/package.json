@@ -1,0 +1,16 @@
+{
+  "name": "dalmuti-mobile-root",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "concurrently \"npm:dev:be\" \"npm:dev:fe\"",
+    "dev:be": "npm --prefix dalmuti-mobile-server run start:dev",
+    "dev:fe": "npm --prefix frontend run dev",
+    "build": "npm --prefix frontend run build && npm --prefix dalmuti-mobile-server run build",
+    "start": "node dalmuti-mobile-server/dist/main.js"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.0"
+  }
+}
+
