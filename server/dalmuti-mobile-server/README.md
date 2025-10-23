@@ -20,3 +20,18 @@ Dalmuti Mobile Server (NestJS)
 - 환경변수:
   - `LOG_LEVEL` (기본 `info`)
   - `LOG_MAX_FILES` (예: `14d`)
+
+웹소켓
+
+- 네임스페이스: `ws://localhost:3000/ws`
+- 이벤트
+  - `join` `{ roomId, nickname? }` → 같은 방 참가, 브로드캐스트 `system: { type: 'join' }`
+  - `leave` `{ roomId }` → 방 퇴장, 브로드캐스트 `system: { type: 'leave' }`
+  - `chat` `{ roomId, message }` → 방 내 브로드캐스트 `chat`
+
+확장(Redis 어댑터)
+
+- 멀티 인스턴스에서 룸/브로드캐스트를 동기화하려면 Redis 설정을 추가하세요.
+- 환경변수 중 하나를 설정하면 자동 활성화됩니다.
+  - `REDIS_URL=redis://localhost:6379`
+  - 또는 `REDIS_HOST=127.0.0.1` + `REDIS_PORT=6379`

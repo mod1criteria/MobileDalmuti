@@ -1,26 +1,47 @@
-import { Controller, Get, Header, Query } from '@nestjs/common';
-import { AppService } from './app.service';
-import * as fs from 'fs';
-import * as path from 'path';
+import { Body, Controller, Get, Header, Post, Query } from '@nestjs/common';
+import { DiagnosticsService } from './diagnostics.service';
 
-@Controller()
-export class AppController {
-  constructor(private readonly appService: AppService) {}
+@Controller('diag')
+export class DiagnosticsController {
+  constructor(private readonly svc: DiagnosticsService) {}
 
-  @Get('/')
-  @Header('Content-Type', 'text/html; charset=utf-8')
-  getRoot(): string {
-    return this.appService.getIndexHtml();
+  @Get()
+  root() {
+    return this.svc.getInfo();
   }
 
-  @Get('/health')
-  getHealth(): { status: string } {
-    return { status: 'ok' };
+  @Get('redis')
+  redis() {
+    return this.svc.pingRedis();
   }
 
-  @Get('/diag/ui')
+  @Get('ws')
+  ws() { return this.svc.wsStats(); }
+
+  @Get('echo')
+  echo(@Query('msg') msg?: string) {
+    return { msg: msg || '' };
+  }
+
+  @Post('log')
+  log(@Body() body: { level?: string; message?: string; context?: string }) {
+    const level = (body.level || 'info') as any;
+    const message = body.message || 'test log';
+    const context = body.context || 'DiagHTTP';
+    return this.svc.writeLogs(level, message, context);
+  }
+
+  @Get('logs')
+  @Header('Content-Type', 'text/plain; charset=utf-8')
+  logs(@Query('lines') lines?: string) {
+    const n = lines ? parseInt(lines, 10) : 200;
+    const { content = '', error } = this.svc.readLogTail(Number.isFinite(n) ? n : 200) as any;
+    return error ? String(error) : content;
+  }
+
+  @Get('ui')
   @Header('Content-Type', 'text/html; charset=utf-8')
-  getDiagUi(): string {
+  ui() {
     return `<!doctype html>
 <html lang="ko">
   <head>
@@ -78,8 +99,14 @@ export class AppController {
     <script>
       const $ = (id) => document.getElementById(id);
       const fmt = (o) => typeof o === 'string' ? o : JSON.stringify(o, null, 2);
-      async function fetchJson(url) { const r = await fetch(url); return r.json(); }
-      async function fetchText(url) { const r = await fetch(url); return r.text(); }
+      async function fetchJson(url) {
+        const r = await fetch(url);
+        return r.json();
+      }
+      async function fetchText(url) {
+        const r = await fetch(url);
+        return r.text();
+      }
       async function refreshAll() {
         const started = Date.now();
         try {
@@ -94,31 +121,23 @@ export class AppController {
           $('#ws').textContent = fmt(ws);
           $('#log').textContent = log || '';
           $('#status').textContent = '업데이트: ' + new Date().toLocaleTimeString() + ' (' + (Date.now()-started) + 'ms)';
-        } catch (e) { $('#status').textContent = '오류: ' + e; }
+        } catch (e) {
+          $('#status').textContent = '오류: ' + e;
+        }
       }
       let timer = null;
       $('#refresh').onclick = refreshAll;
-      $('#reloadLog').onclick = async () => { $('#log').textContent = await fetchText('/diag/logs?lines=' + (Number($('#lines').value)||200)); };
-      $('#auto').onchange = () => { if (timer) { clearInterval(timer); timer = null; } const sec = Number($('#auto').value); if (sec > 0) timer = setInterval(refreshAll, sec*1000); };
+      $('#reloadLog').onclick = async () => {
+        $('#log').textContent = await fetchText('/diag/logs?lines=' + (Number($('#lines').value)||200));
+      };
+      $('#auto').onchange = () => {
+        if (timer) { clearInterval(timer); timer = null; }
+        const sec = Number($('#auto').value);
+        if (sec > 0) timer = setInterval(refreshAll, sec*1000);
+      };
       refreshAll();
     </script>
   </body>
 </html>`;
-  }
-
-  @Get('/diag/logs')
-  @Header('Content-Type', 'text/plain; charset=utf-8')
-  getDiagLogs(@Query('lines') lines?: string): string {
-    const n = lines ? parseInt(lines, 10) : 200;
-    const maxLines = Math.min(Math.max(Number.isFinite(n) ? n : 200, 1), 1000);
-    const file = path.resolve(process.cwd(), 'logs', 'server.log');
-    try {
-      if (!fs.existsSync(file)) return '';
-      const data = fs.readFileSync(file, 'utf8');
-      const arr = data.split(/\r?\n/);
-      return arr.slice(-maxLines).join('\n');
-    } catch {
-      return '';
-    }
   }
 }

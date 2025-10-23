@@ -1,26 +1,13 @@
 import { Controller, Get, Header, Query } from '@nestjs/common';
-import { AppService } from './app.service';
-import * as fs from 'fs';
-import * as path from 'path';
+import { DiagnosticsService } from './diagnostics.service';
 
-@Controller()
-export class AppController {
-  constructor(private readonly appService: AppService) {}
+@Controller('diag/ui')
+export class DiagnosticsUiController {
+  constructor(private readonly svc: DiagnosticsService) {}
 
-  @Get('/')
+  @Get()
   @Header('Content-Type', 'text/html; charset=utf-8')
-  getRoot(): string {
-    return this.appService.getIndexHtml();
-  }
-
-  @Get('/health')
-  getHealth(): { status: string } {
-    return { status: 'ok' };
-  }
-
-  @Get('/diag/ui')
-  @Header('Content-Type', 'text/html; charset=utf-8')
-  getDiagUi(): string {
+  ui() {
     return `<!doctype html>
 <html lang="ko">
   <head>
@@ -105,20 +92,5 @@ export class AppController {
   </body>
 </html>`;
   }
-
-  @Get('/diag/logs')
-  @Header('Content-Type', 'text/plain; charset=utf-8')
-  getDiagLogs(@Query('lines') lines?: string): string {
-    const n = lines ? parseInt(lines, 10) : 200;
-    const maxLines = Math.min(Math.max(Number.isFinite(n) ? n : 200, 1), 1000);
-    const file = path.resolve(process.cwd(), 'logs', 'server.log');
-    try {
-      if (!fs.existsSync(file)) return '';
-      const data = fs.readFileSync(file, 'utf8');
-      const arr = data.split(/\r?\n/);
-      return arr.slice(-maxLines).join('\n');
-    } catch {
-      return '';
-    }
-  }
 }
+
