@@ -1,21 +1,28 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
-    "declaration": false,
-    "removeComments": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "allowSyntheticDefaultImports": true,
-    "target": "ES2019",
-    "sourceMap": true,
+    /* 출력 설정 */
+    "target": "ES2020",               // 트랜스파일 결과 JS 버전
+    "module": "commonjs",             // Express는 아직 commonjs가 편함
+    "rootDir": "src",
     "outDir": "dist",
-    "baseUrl": "./",
-    "incremental": true,
-    "strict": true,
-    "skipLibCheck": true,
-    "moduleResolution": "node"
+
+    /* 모듈 해석 */
+    "moduleResolution": "node",
+    "esModuleInterop": true,          // import express from 'express' 이렇게 쓰려면 필수
+    "resolveJsonModule": true,        // config.json 같은 거 import 허용
+    "allowSyntheticDefaultImports": true,
+
+    /* 타입 체크 강도 */
+    "strict": true,                   // 엄격 모드 ON (웬만하면 키고 가는 걸 추천)
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,             // node_modules 타입 검사는 스킵
+
+    /* 기타 */
+    "sourceMap": true,                // 디버깅용 소스맵
+    "pretty": true
   },
-  "include": ["src/**/*"],
+  "include": ["src"],
   "exclude": ["node_modules", "dist"]
 }
-

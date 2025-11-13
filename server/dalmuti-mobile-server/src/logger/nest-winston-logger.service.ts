@@ -1,7 +1,6 @@
-import { LoggerService } from '@nestjs/common';
 import type { Logger as WinstonLogger } from 'winston';
 
-export class NestWinstonLogger implements LoggerService {
+export class DalmutiLogger {
   constructor(private readonly logger: WinstonLogger) {}
 
   log(message: any, context?: string) {
