@@ -1,6 +1,6 @@
 import type { Logger as WinstonLogger } from 'winston';
 
-export class DalmutiLogger {
+export class Logger {
   constructor(private readonly logger: WinstonLogger) {}
 
   log(message: any, context?: string) {
