@@ -1,0 +1,55 @@
+# ===== Root .gitignore =====
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+*.tmp
+
+# Environment files
+.env
+.env.*
+*.env
+
+# Node (server용 기본 무시 — server/.gitignore가 있어도 중복은 괜찮음)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Python virtual env (혹시 사용할 경우)
+venv/
+__pycache__/
+
+# Unity project inside client_unity
+client_unity/Library/
+client_unity/Temp/
+client_unity/Obj/
+client_unity/Build/
+client_unity/Builds/
+client_unity/Logs/
+client_unity/UserSettings/
+client_unity/MemoryCaptures/
+client_unity/ProjectSettings/UnityConnectSettings.asset
+
+# Unity generated files
+client_unity/Assets/AssetStoreTools*
+client_unity/*.csproj
+client_unity/*.unityproj
+client_unity/*.sln
+client_unity/*.user
+client_unity/*.pidb
+client_unity/*.booproj
+
+# Ignore local IDE settings
+.vscode/
+.idea/
+
+# Backup / Cache
+*.bak
+*.patch
+*.orig
+*.cache
