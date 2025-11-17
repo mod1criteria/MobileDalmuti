@@ -1,0 +1,36 @@
+# ===== client_unity/.gitignore =====
+
+# Unity generated folders
+Library/
+Temp/
+Obj/
+Build/
+Builds/
+Logs/
+UserSettings/
+MemoryCaptures/
+
+# Unity auto-generated files
+*.csproj
+*.sln
+*.unityproj
+*.user
+*.pidb
+*.booproj
+
+# Crash reports
+sysinfo.txt
+
+# Cache
+*.ini
+*.tmp
+*.bak
+
+# Local test artifacts
+*.apk
+*.aab
+
+# Visual Studio / Rider / VSCode
+.vscode/
+.idea/
+*.DotSettings
