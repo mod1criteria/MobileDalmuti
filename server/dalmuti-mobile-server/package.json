@@ -9,11 +9,13 @@
   "description": "",
   "main": "server.js",
   "dependencies": {
+    "@types/ws": "^8.18.1",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "undici-types": "^7.16.0",
     "winston": "^3.18.3",
-    "winston-daily-rotate-file": "^5.0.0"
+    "winston-daily-rotate-file": "^5.0.0",
+    "ws": "^8.18.3"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

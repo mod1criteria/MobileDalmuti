@@ -15,13 +15,7 @@ app.get("/health", (req: Request, res: Response) => {
   res.json({ status: "ok" });
 });
 
-app.use(
-  (
-    err: Error & { status?: number },
-    req: Request,
-    res: Response,
-    _next: NextFunction,
-  ) => {
+app.use( (err: Error & { status?: number }, req: Request, res: Response, _next: NextFunction, ) => {
     const statusCode = err.status ?? 500;
     logger.error(err.message, err.stack, "ExpressError");
     res.status(statusCode).json({
