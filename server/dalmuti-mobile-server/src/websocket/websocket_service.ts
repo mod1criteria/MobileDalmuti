@@ -2,7 +2,7 @@
 import { IncomingMessage } from "http";
 import { WebSocketServer, WebSocket, RawData } from "ws";
 import { logger } from "../logger";
-import { webSocketAuthManager, AUTH_KEY_TTL_MS } from "./auth/websocket_auth";
+import { webSocketAuthManager, AUTH_KEY_TTL_MS } from "./auth/auth_manager";
 import { WebSocketPayloadType } from "./websocket_enum";
 import { userManager } from "./user/user_manager";
 

@@ -1,4 +1,4 @@
-import { User } from "./user_model";
+import { User } from "./user";
 import WebSocket from "ws";
 
 class UserManager {

@@ -1,0 +1,36 @@
+
+
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "tsc: build dalmuti server",
+            "type": "shell",
+            "command": "npx tsc -p .",
+            "group": "build",
+            "problemMatcher": "$tsc",
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated"
+            }
+        },
+        {
+            "label": "tsc: watch dalmuti server",
+            "type": "shell",
+            "command": "npx tsc -p . --watch",
+            "isBackground": true,
+            "problemMatcher": {
+                "base": "$tsc-watch",
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": ".*Watching for file changes.*",
+                    "endsPattern": ".*Compilation complete.*"
+                }
+            },
+            "presentation": {
+                "reveal": "never",
+                "panel": "dedicated"
+            }
+        }
+    ]
+}
