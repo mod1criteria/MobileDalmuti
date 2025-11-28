@@ -45,7 +45,7 @@ client_unity/*.pidb
 client_unity/*.booproj
 
 # Ignore local IDE settings
-.vscode/
+
 .idea/
 
 # Backup / Cache
