@@ -1,6 +1,6 @@
 ﻿import { randomBytes } from "crypto";
 import { WebSocket } from "ws";
-import { logger } from "../../logger";
+import { logger } from "../../../logger";
 
 const KEY_TTL_MS = 60_000; // one minute
 export const AUTH_KEY_TTL_MS = KEY_TTL_MS;
