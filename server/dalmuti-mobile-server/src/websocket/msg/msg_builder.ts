@@ -1,5 +1,5 @@
 import { logger } from "../../logger";
-import { ErrorCode } from "../Error";
+import { ErrorCode, ErrorMessageMap } from "../dalmuti_error";
 import { MsgSchema } from "./msg_schema";
 import { MessageOf, Msg, MsgSubType, MsgType } from "./msg_type";
 import { WebSocket } from "ws";
@@ -57,6 +57,7 @@ export function serializeMessage<
   S extends MsgSubType<C>
 >(message: MessageOf<C, S>): string;
 
+
 export function serializeMessage(message: Msg): string {
     try {
       return JSON.stringify(message);
@@ -81,4 +82,28 @@ export function serializeMessage(message: Msg): string {
   
       return JSON.stringify(fallback);
     }
+  }
+
+  export function buildErrorMessage(
+    code: ErrorCode,
+    details?: unknown,
+    overrideMessage?: string,
+  ): MessageOf<"error", "generic_error"> {
+    const message = overrideMessage ?? ErrorMessageMap[code] ?? "Unknown error";
+  
+    return msgBuilders.error.generic_error({
+      code,
+      message,
+      ...(details === undefined ? {} : { details }),
+    });
+  }
+
+  export function sendError(
+    socket: WebSocket,
+    code: ErrorCode,
+    details?: unknown,
+    overrideMessage?: string,
+  ): void {
+    const msg = buildErrorMessage(code, details, overrideMessage);
+    sendMsg(socket, msg);
   }

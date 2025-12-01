@@ -30,12 +30,14 @@ export interface MsgSchema {
     };
     auth: {
         auth_challenge: {
+            // 서버 → 클라이언트
             authKey: string;
             payload: {
                 ttlMs: number;
             };
         };
         auth_verify: {
+            // 클라이언트 → 서버
             authKey: string;
         };
         auth_confirmed: {

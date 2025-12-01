@@ -3,10 +3,10 @@ import { IncomingMessage } from "http";
 import { WebSocketServer, WebSocket, RawData } from "ws";
 import { logger } from "../logger";
 import { webSocketAuthManager, AUTH_KEY_TTL_MS } from "./module/auth/auth_manager";
-import { Msg, MsgType } from "./msg/msg_type";
+import { Msg } from "./msg/msg_type";
 import { userManager } from "./module/user/user_manager";
-import { msgBuilders, sendMsg } from "./msg/msg_builder";
-import { ErrorCode } from "./Error";
+import { sendError, sendMsg } from "./msg/msg_builder";
+import { ErrorCode } from "./dalmuti_error";
 
 
 // HTTP 서버 위에 WebSocket 서버를 구성하고 이벤트를 처리합니다.
@@ -23,7 +23,7 @@ export const initializeWebSocketServer = (server: HttpServer) => {
     socket.on("message", (data: RawData) => {
       const payload = parseIncomingMessage(data);
       if (!payload) {
-        sendMsg(socket, { type: "error", subtype: "generic_error", message: "Invalid payload format", code: ErrorCode.INVALID_PAYLOAD_FORMAT });
+        sendError(socket, ErrorCode.INVALID_PAYLOAD_FORMAT);
         return;
       }
       // 인증 키를 제외한 나머지 페이로드 데이터를 준비.
@@ -47,7 +47,7 @@ export const initializeWebSocketServer = (server: HttpServer) => {
 
       // 인증 검증 요청에 대해 인증 확인 응답을 전송.
       if (payload.type === "auth") {
-        if (payload.subtype === "auth_confirmed") {
+        if (payload.subtype === "auth_verify") {
           sendMsg(socket, { type: "auth", subtype: "auth_confirmed", payload: { success: true } });
         }
         if (payload.subtype === "login") {
@@ -132,14 +132,15 @@ const stripAuthKey = (msg: Msg): unknown => {
 
 // payload 내 인증 키를 확인하고 유효하지 않으면 에러를 전송합니다.
 const requireValidAuthKey = (socket: WebSocket, payload: Msg): string | null => {
+  
   const authKey = extractAuthKey(payload);
   if (!authKey) {
-    sendMsg(socket, { type: "error", subtype: "generic_error", message: "Missing authKey in payload", code: ErrorCode.MISSING_AUTH_KEY });
+    sendError(socket, ErrorCode.MISSING_AUTH_KEY);
     return null;
   }
 
   if (!webSocketAuthManager.refreshKey(authKey)) {
-    sendMsg(socket, { type: "error", subtype: "generic_error", message: "Invalid or expired authKey", code: ErrorCode.INVALID_OR_EXPIRED_AUTH_KEY });
+    sendError(socket, ErrorCode.INVALID_OR_EXPIRED_AUTH_KEY);
     return null;
   }
 
