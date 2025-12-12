@@ -12,13 +12,13 @@ export interface MsgSchema {
         ping: {
             // 클라이언트 → 서버
             payload: {
-                timestamp: number; // YYYYMMDDHHmmssSSS
+                timestamp: string; // YYYYMMDDHHmmssSSS
             }
         };
         pong: {
             // 서버 → 클라이언트
             payload: {
-                timestamp: number; // YYYYMMDDHHmmssSSS
+                timestamp: string; // YYYYMMDDHHmmssSSS
             }
         };
         ack: {

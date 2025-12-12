@@ -1,11 +1,11 @@
 import http from "http";
 import app from "./app";
 import { logger } from "./logger";
-import { initializeWebSocketServer } from "./websocket/websocket_service";
+import { websocketMng } from "./websocket/websocket_manager";
 
 const PORT = parseInt(process.env.PORT ?? "3000", 10);
 const server = http.createServer(app);
-const { wss } = initializeWebSocketServer(server);
+websocketMng.InitializeWebSocketServer(server);
 
 server.listen(PORT, () => {
   logger.log(`HTTP server listening on http://localhost:${PORT}`, "Bootstrap");
@@ -14,8 +14,4 @@ server.listen(PORT, () => {
 
 server.on("error", (error) => {
   logger.error(`Server error: ${error.message}`, error.stack, "Bootstrap");
-});
-
-wss.on("close", () => {
-  logger.log("WebSocket server closed", "Bootstrap");
 });

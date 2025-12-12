@@ -1,5 +1,5 @@
-import { logger } from "../../logger";
-import { ErrorCode, ErrorMessageMap } from "../dalmuti_error";
+import { logger } from "../logger";
+import { ErrorCode, ErrorMessageMap } from "../error/dalmuti_error";
 import { MsgSchema } from "./msg_schema";
 import { MessageOf, Msg, MsgSubType, MsgType } from "./msg_type";
 import { WebSocket } from "ws";
